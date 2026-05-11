@@ -1,0 +1,6 @@
+{
+  "name": "Trip Planner & Weather",
+  "description": "Sayohat Rejalashtiruvchi - Google Maps va OpenWeather API laridan foydalanib manzillarni qidirish, ob-havo va diqqatga sazovor joylarni ko'rish va sayohatni rejalashtirish.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
