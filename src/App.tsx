@@ -6,7 +6,7 @@ import { TripForm } from "./components/TripForm";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Plane, Map as MapIcon, Plus, Info, ExternalLink } from "lucide-react";
+import { Plane, Map as MapIcon, Plus, Info, ExternalLink, ChevronLeft, Trash2 } from "lucide-react";
 import { Trip } from "./types";
 import { toast, Toaster } from "sonner";
 import * as motion from "motion/react-client";
@@ -16,7 +16,24 @@ function App() {
   const [location, setLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [attractions, setAttractions] = useState<any[]>([]);
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [savedTrips, setSavedTrips] = useState<Trip[]>([]);
+  const [savedTrips, setSavedTrips] = useState<Trip[]>(() => {
+    try {
+      const saved = localStorage.getItem("trips");
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    localStorage.setItem("trips", JSON.stringify(savedTrips));
+  }, [savedTrips]);
+
+  const deleteTrip = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSavedTrips(prev => prev.filter(t => t.id !== id));
+    toast.success("Sayohat muvaffaqiyatli o'chirildi");
+  };
 
   useEffect(() => {
     if (!selectedPlace) return;
@@ -46,11 +63,14 @@ function App() {
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-primary/20">
       <header className="bg-white/80 backdrop-blur-md border-b sticky top-0 z-30 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2 text-primary font-bold text-xl tracking-tight">
+          <div 
+             className="flex items-center gap-2 text-primary font-bold text-xl tracking-tight cursor-pointer hover:opacity-80 transition-opacity"
+             onClick={() => setSelectedPlace(null)}
+          >
             <Plane className="h-6 w-6" />
-            <span>Sayohat Rejalashtiruvchi</span>
+            <span className="hidden sm:inline">Sayohat Rejalashtiruvchi</span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-1 justify-end max-w-sm">
              <CitySearch onSelect={setSelectedPlace} />
           </div>
         </div>
@@ -73,14 +93,22 @@ function App() {
             </p>
 
             {savedTrips.length > 0 && (
-              <div className="mt-16 w-full max-w-4xl text-left">
+              <div className="mt-16 w-full max-w-5xl text-left">
                 <h2 className="text-2xl font-bold mb-6">Mening Sayohatlarim</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {savedTrips.map((trip) => (
-                    <Card key={trip.id} className="overflow-hidden hover:shadow-xl transition-all rounded-2xl border-transparent hover:border-primary/20">
+                    <Card key={trip.id} className="overflow-hidden hover:shadow-xl transition-all rounded-2xl border-transparent hover:border-primary/20 relative group">
+                      <Button 
+                         variant="destructive" 
+                         size="icon" 
+                         className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10 w-8 h-8"
+                         onClick={(e) => deleteTrip(trip.id || '', e)}
+                      >
+                         <Trash2 className="h-4 w-4" />
+                      </Button>
                       <CardContent className="p-0">
-                        <div className="bg-gradient-to-r from-primary/10 to-transparent p-4 border-b">
-                          <h3 className="font-bold text-lg">{trip.destination.name}</h3>
+                        <div className="bg-gradient-to-r from-primary/10 to-transparent p-4 border-b pr-12">
+                          <h3 className="font-bold text-lg line-clamp-1">{trip.destination.name}</h3>
                         </div>
                         <div className="p-4 text-sm text-muted-foreground space-y-2">
                           <p className="font-medium text-foreground">Boshlanish: {new Date(trip.startDate).toLocaleDateString('uz-UZ')}</p>
@@ -98,7 +126,10 @@ function App() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div className="lg:col-span-2 space-y-8">
                <motion.div initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }}>
-                  <div className="flex items-center justify-between mb-6">
+                  <Button variant="ghost" onClick={() => setSelectedPlace(null)} className="mb-4 -ml-4 text-muted-foreground hover:text-foreground">
+                    <ChevronLeft className="h-4 w-4 mr-1" /> Bosh sahifa
+                  </Button>
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
                      <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary to-blue-600">
                         {selectedPlace.name || selectedPlace.display_name.split(',')[0]}
                      </h2>
