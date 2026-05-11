@@ -14,7 +14,7 @@
 
 Sayohat Rejalashtiruvchi - bu foydalanuvchilarga o'zlari bormoqchi bo'lgan shaharni qidirish, uning xaritasini, ob-havo ma'lumotlarini va diqqatga sazovor joylarini ko'rish imkonini beruvchi zamonaviy web platforma. Ilova shuningdek, sayohat sanalarini belgilash va qaydlar saqlash imkoniyatini ham taqdim etadi. Hamma xizmatlar (ob-havo, xarita, qamrov) API-kalitlar talab qilmaydigan ochiq API-larga ulangan.
 
-👉 **[JONLI NAMUNA (Live Demo) ni ko'rish](https://your-github-username.github.io/your-repository-name)**
+👉 **[JONLI NAMUNA (Live Demo) ni ko'rish](https://sanjarbek404.github.io/Travel/)**
 
 *(Izoh: Agar loyihani GitHub'ga yuklab GitHub Pages'ni yoqsangiz, Live Demo manzilini shunga o'zgartirib qo'yishingiz mumkin).*
 
